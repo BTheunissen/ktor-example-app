@@ -1,20 +1,16 @@
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+group = "org.theunissen.tech"
+version = "1.0-SNAPSHOT"
+
+val mainClass by extra("AppKt")
 
 plugins {
     application
     kotlin("jvm") version "1.3.31"
-    id("com.google.cloud.tools.jib") version "1.1.2"
+    id("com.google.cloud.tools.jib").version("1.1.2")
 }
 
-group = "org.theunissen.tech"
-version = "1.0-SNAPSHOT"
-
-val arrow_version = "0.9.0"
-
-val main_class by extra("AppKt")
-
 application {
-    mainClassName = main_class
+    mainClassName = mainClass
 
     applicationDefaultJvmArgs = listOf(
         "-server",
@@ -32,18 +28,19 @@ repositories {
     mavenCentral()
     jcenter()
     maven("https://dl.bintray.com/arrow-kt/arrow-kt/")
-    maven( "https://oss.jfrog.org/artifactory/oss-snapshot-local/")
 }
 
-dependencies {
-    implementation(kotlin("stdlib-jdk8"))
-    compile("io.arrow-kt:arrow-core-data:$arrow_version")
+tasks.withType<Test> {
+    useJUnitPlatform()
+    testLogging {
+        events("PASSED", "FAILED", "SKIPPED")
+    }
 }
 
 jib {
     container {
         ports = listOf("8080")
-        mainClass = main_class
+        mainClass = mainClass
 
         // Docker defaults intended for Java 8 (>= 8u191) containers
         jvmFlags = listOf(
@@ -57,4 +54,18 @@ jib {
             "-XX:+UseStringDeduplication"
         )
     }
+}
+
+val kotlinVersion = "1.3.31"
+val arrowVersion = "0.9.0"
+val kotlinTestVersion = "3.3.2"
+val junitVersion = "5.3.2"
+val slf4jVersion = "1.7.26"
+
+dependencies {
+    implementation(kotlin("stdlib-jdk8"))
+    compile("io.arrow-kt:arrow-core-data:$arrowVersion")
+    testCompile("io.kotlintest:kotlintest-runner-junit5:$kotlinTestVersion")
+    testImplementation("io.kotlintest:kotlintest-assertions-arrow:$kotlinTestVersion")
+    testImplementation("org.slf4j:slf4j-simple:$slf4jVersion")
 }

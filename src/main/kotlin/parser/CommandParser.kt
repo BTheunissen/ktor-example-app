@@ -8,12 +8,14 @@ import java.io.InputStream
 import kotlin.streams.toList
 
 object CommandParser {
-
     fun parseInput(input: InputStream): List<Either<AppError,Command>> =
-        input.bufferedReader().lines().map(this::parseCommand).toList()
+        input.bufferedReader().lines()
+            .map { it.trim() }
+            .map(this::parseCommand)
+            .toList()
 
     private fun parseCommand(commandString: String): Either<AppError, Command> {
-        val placePattern = """\d+,\d+,(NORTH|EAST|SOUTH|WEST)""".toRegex()
+        val placePattern = """PLACE,\d+,\d+,(NORTH|EAST|SOUTH|WEST)""".toRegex()
 
         return when {
             commandString == "LEFT" -> Command.Left.right()
@@ -21,12 +23,12 @@ object CommandParser {
             commandString == "MOVE" -> Command.Move.right()
             commandString == "REPORT" -> Command.Report.right()
             commandString.matches(placePattern) -> {
-                val placeCommandParts = placePattern.split(",")
+                val placeCommandParts = commandString.split(",")
 
-                return Direction.fromString(placeCommandParts[2]).flatMap { direction ->
+                return Direction.fromString(placeCommandParts[3]).flatMap { direction ->
                     Command.Place(
-                        placeCommandParts[0].toInt(),
                         placeCommandParts[1].toInt(),
+                        placeCommandParts[2].toInt(),
                         direction
                     ).right()
                 }
