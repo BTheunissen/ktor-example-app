@@ -4,10 +4,9 @@ import io.kotlintest.assertions.arrow.either.shouldBeLeft
 import io.kotlintest.assertions.arrow.either.shouldBeRight
 import io.kotlintest.properties.assertAll
 import io.kotlintest.specs.ShouldSpec
-import io.kotlintest.specs.StringSpec
 import utils.AppError
 
-object DirectionSpec: ShouldSpec({
+class DirectionSpec: ShouldSpec({
     "Direction" {
         "fromString" {
             should("return NORTH enum in a Right when passed NORTH string") {
