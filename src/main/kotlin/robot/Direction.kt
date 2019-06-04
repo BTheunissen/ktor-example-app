@@ -10,12 +10,12 @@ enum class Direction {
 
     companion object {
         fun fromString(directionString: String): Either<AppError, Direction> =
-            when(directionString) {
-                "NORTH" -> valueOf("NORTH").right()
-                "EAST" -> valueOf("EAST").right()
-                "SOUTH" -> valueOf("SOUTH").right()
-                "WEST" -> valueOf("WEST").right()
-                else -> AppError.InvalidCommand("Invalid direction: $directionString").left()
-            }
+          when (directionString) {
+              "NORTH" -> valueOf("NORTH").right()
+              "EAST" -> valueOf("EAST").right()
+              "SOUTH" -> valueOf("SOUTH").right()
+              "WEST" -> valueOf("WEST").right()
+              else -> AppError.InvalidCommand("Invalid direction: $directionString").left()
+          }
     }
 }
